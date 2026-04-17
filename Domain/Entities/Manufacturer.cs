@@ -1,8 +1,3 @@
 namespace GizmoGateway.Domain.Entities;
 
-public class Manufacturer
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
-}
+public record Manufacturer(Guid Id, string Name, string? Description);

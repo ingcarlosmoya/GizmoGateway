@@ -1,5 +1,6 @@
 using GizmoGateway.Domain.Entities;
 using GizmoGateway.Domain.Interfaces;
+using GizmoGateway.Domain.Common;
 
 namespace GizmoGateway.Application.Services;
 
@@ -12,9 +13,7 @@ public class GizmoService
         _repo = repo;
     }
 
-    public Task<IEnumerable<Gizmo>> GetAllAsync() => _repo.GetAllAsync();
-
+    public Task<PagedResponse<Gizmo>> GetAllAsync(int page, int pageSize) => _repo.GetAllAsync(page, pageSize);
+    public Task<PagedResponse<Gizmo>> GetByCategoryAsync(string category, int page, int pageSize) => _repo.GetByCategoryAsync(category, page, pageSize);
     public Task<Gizmo?> GetByIdAsync(Guid id) => _repo.GetByIdAsync(id);
-
-    public Task<Gizmo> CreateAsync(Gizmo gizmo) => _repo.AddAsync(gizmo);
 }
