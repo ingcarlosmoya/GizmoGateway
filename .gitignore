@@ -3,5 +3,10 @@
 ################################################################################
 
 /.vs
+# Ignore all bin and obj folders anywhere in the project
 **/bin/
 **/obj/
+
+# Ignore specific build artifacts
+[Bb]in/
+[Oo]bj/

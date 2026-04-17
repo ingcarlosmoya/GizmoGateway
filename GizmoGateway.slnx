@@ -12,4 +12,7 @@
   <Folder Name="/src/Presentation/">
     <Project Path="src/Presentation/GizmoGateway.Api.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GizmoGateway.Tests/GizmoGateway.Tests.csproj" />
+  </Folder>
 </Solution>
