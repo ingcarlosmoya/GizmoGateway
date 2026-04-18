@@ -9,11 +9,11 @@ using Xunit;
 
 namespace GizmoGateway.Tests.Integration.Presentation.Endpoints;
 
-public class GizmoApiTests : IClassFixture<WebApplicationFactory<Program>>
+public class GizmosEndpointTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public GizmoApiTests(WebApplicationFactory<Program> factory)
+    public GizmosEndpointTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
     }
@@ -44,6 +44,68 @@ public class GizmoApiTests : IClassFixture<WebApplicationFactory<Program>>
         var randomId = Guid.NewGuid();
         var respNotFound = await client.GetAsync($"/api/gizmos/{randomId}");
         respNotFound.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetGizmos_InvalidCategory_ReturnsEmptyItems()
+    {
+        using var client = _factory.CreateClient();
+
+        var invalidCategory = "NonExistentCategory";
+        var page = 1;
+        var pageSize = 2;
+
+        var resp = await client.GetAsync($"/api/gizmos?category={Uri.EscapeDataString(invalidCategory)}&page={page}&pageSize={pageSize}");
+        resp.EnsureSuccessStatusCode();
+
+        var json = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        // Verify paged response structure
+        root.GetProperty("pageNumber").GetInt32().Should().Be(page);
+        root.GetProperty("pageSize").GetInt32().Should().Be(pageSize);
+
+        var items = root.GetProperty("items");
+        items.GetArrayLength().Should().Be(0);
+    }
+
+    [Fact]
+    public async Task GetGizmos_InvalidPage_ReturnsBadRequest()
+    {
+        using var client = _factory.CreateClient();
+
+        var category = "Wearables";
+        var invalidPage = -1;
+        var invalidPageSize = -1;
+
+        var resp = await client.GetAsync($"/api/gizmos?category={Uri.EscapeDataString(category)}&page={invalidPage}&pageSize={invalidPageSize}");
+       
+        var json = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        // Verify paged response structure
+        root.GetProperty("error").GetString().Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public async Task GetGizmos_InvalidPageSize_ReturnsBadRequest()
+    {
+        using var client = _factory.CreateClient();
+
+        var category = "Wearables";
+        var page = 1;
+        var invalidPageSize = -1;
+
+        var resp = await client.GetAsync($"/api/gizmos?category={Uri.EscapeDataString(category)}&page={page}&pageSize={invalidPageSize}");
+       
+        var json = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        // Verify error message
+        root.GetProperty("error").GetString().Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
