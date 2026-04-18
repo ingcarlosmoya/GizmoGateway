@@ -1,9 +1,9 @@
 using GizmoGateway.Presentation.Endpoints;
 using GizmoGateway.Domain.Interfaces;
-using GizmoGateway.Infrastructure.Persistence.Mock;
 using GizmoGateway.Application.Services;
 using GizmoGateway.Presentation.Middlewares;
 using Microsoft.AspNetCore.Diagnostics;
+using GizmoGateway.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();

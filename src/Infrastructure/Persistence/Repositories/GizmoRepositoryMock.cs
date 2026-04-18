@@ -4,7 +4,7 @@ using GizmoGateway.Domain.Entities;
 using GizmoGateway.Domain.Interfaces;
 using GizmoGateway.Domain.Common;
 
-namespace GizmoGateway.Infrastructure.Persistence.Mock;
+namespace GizmoGateway.Infrastructure.Persistence.Repositories;
 
 public class GizmoRepositoryMock : IGizmoRepository
 {

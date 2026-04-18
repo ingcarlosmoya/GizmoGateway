@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using GizmoGateway.Infrastructure.Persistence.Mock;
+using GizmoGateway.Infrastructure.Persistence.Repositories;
 using GizmoGateway.Application.Services;
 using GizmoGateway.Domain.Interfaces;
 using GizmoGateway.Domain.Entities;
@@ -19,13 +19,15 @@ public class GizmoServiceTests
     {
         // Arrange
         var mockRepo = new Mock<IGizmoRepository>();
-        var items = new[]
-        {
-            new Gizmo(Guid.NewGuid(), "G1", "Cat", new Manufacturer(Guid.NewGuid(), "M", null), null, 1m),
-            new Gizmo(Guid.NewGuid(), "G2", "Cat", new Manufacturer(Guid.NewGuid(), "M", null), null, 2m)
-        };
-        var paged = new PagedResponse<Gizmo>(items, 1, 2, items.Length);
-        mockRepo.Setup(r => r.GetAllAsync(1, 2)).ReturnsAsync(paged);
+        var m1 = new Mock<Manufacturer>(Guid.NewGuid(), "M", null);
+        var m2 = new Mock<Manufacturer>(Guid.NewGuid(), "M", null);
+
+        var g1 = new Mock<Gizmo>(Guid.NewGuid(), "G1", "Cat", m1.Object, null, 1m);
+        var g2 = new Mock<Gizmo>(Guid.NewGuid(), "G2", "Cat", m2.Object, null, 2m);
+
+        var items = new[] { g1.Object, g2.Object };
+        var paged = new Mock<PagedResponse<Gizmo>>(items, 1, 2, items.Length);
+        mockRepo.Setup(r => r.GetAllAsync(1, 2)).ReturnsAsync(paged.Object);
 
         var svc = new GizmoService(mockRepo.Object);
 
@@ -45,8 +47,8 @@ public class GizmoServiceTests
     {
         // Arrange
         var mockRepo = new Mock<IGizmoRepository>();
-        var paged = new PagedResponse<Gizmo>(Array.Empty<Gizmo>(), 1, 10, 0);
-        mockRepo.Setup(r => r.GetAllAsync(1, 10)).ReturnsAsync(paged);
+        var paged = new Mock<PagedResponse<Gizmo>>(Array.Empty<Gizmo>(), 1, 10, 0);
+        mockRepo.Setup(r => r.GetAllAsync(1, 10)).ReturnsAsync(paged.Object);
 
         var svc = new GizmoService(mockRepo.Object);
 
@@ -66,14 +68,12 @@ public class GizmoServiceTests
     {
         // Arrange
         var mockRepo = new Mock<IGizmoRepository>();
-        var m = new Manufacturer(Guid.NewGuid(), "M", null);
-        var items = new[]
-        {
-            new Gizmo(Guid.NewGuid(), "G1", "Wearables", m, null, 1m),
-            new Gizmo(Guid.NewGuid(), "G2", "Wearables", m, null, 2m)
-        };
-        var paged = new PagedResponse<Gizmo>(items, 1, 10, items.Length);
-        mockRepo.Setup(r => r.GetByCategoryAsync(It.Is<string>(s => string.Equals(s, "wearables", StringComparison.OrdinalIgnoreCase)), 1, 10)).ReturnsAsync(paged);
+        var m = new Mock<Manufacturer>(Guid.NewGuid(), "M", null);
+        var g1 = new Mock<Gizmo>(Guid.NewGuid(), "G1", "Wearables", m.Object, null, 1m);
+        var g2 = new Mock<Gizmo>(Guid.NewGuid(), "G2", "Wearables", m.Object, null, 2m);
+        var items = new[] { g1.Object, g2.Object };
+        var paged = new Mock<PagedResponse<Gizmo>>(items, 1, 10, items.Length);
+        mockRepo.Setup(r => r.GetByCategoryAsync(It.Is<string>(s => string.Equals(s, "wearables", StringComparison.OrdinalIgnoreCase)), 1, 10)).ReturnsAsync(paged.Object);
 
         var svc = new GizmoService(mockRepo.Object);
 
@@ -91,8 +91,8 @@ public class GizmoServiceTests
     {
         // Arrange
         var mockRepo = new Mock<IGizmoRepository>();
-        var paged = new PagedResponse<Gizmo>(Array.Empty<Gizmo>(), 1, 10, 0);
-        mockRepo.Setup(r => r.GetByCategoryAsync(It.IsAny<string>(), 1, 10)).ReturnsAsync(paged);
+        var paged = new Mock<PagedResponse<Gizmo>>(Array.Empty<Gizmo>(), 1, 10, 0);
+        mockRepo.Setup(r => r.GetByCategoryAsync(It.IsAny<string>(), 1, 10)).ReturnsAsync(paged.Object);
 
         var svc = new GizmoService(mockRepo.Object);
 
@@ -111,8 +111,9 @@ public class GizmoServiceTests
         // Arrange
         var mockRepo = new Mock<IGizmoRepository>();
         var id = Guid.NewGuid();
-        var gizmo = new Gizmo(id, "G1", "Cat", new Manufacturer(Guid.NewGuid(), "M", null), null, 1m);
-        mockRepo.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(gizmo);
+        var mfr = new Mock<Manufacturer>(Guid.NewGuid(), "M", null);
+        var gizmo = new Mock<Gizmo>(id, "G1", "Cat", mfr.Object, null, 1m);
+        mockRepo.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(gizmo.Object);
 
         var svc = new GizmoService(mockRepo.Object);
 

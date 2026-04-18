@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FluentAssertions;
 using GizmoGateway.Domain.Entities;
-using GizmoGateway.Infrastructure.Persistence.Mock;
+using GizmoGateway.Infrastructure.Persistence.Repositories;
 using Xunit;
 
 namespace GizmoGateway.Tests.Integration.Infrastructure.Persistence;

@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using GizmoGateway.Infrastructure.Persistence.Mock;
 using GizmoGateway.Application.Services;
 using Xunit;
+using GizmoGateway.Infrastructure.Persistence.Repositories;
 
 namespace GizmoGateway.Tests.Unit.Infrastructure.Persistence.Mock;
 
