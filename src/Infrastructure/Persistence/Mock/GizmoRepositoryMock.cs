@@ -38,13 +38,15 @@ public class GizmoRepositoryMock : IGizmoRepository
 
     public Task<PagedResponse<Gizmo>> GetAllAsync(int page, int pageSize)
     {
-        return Task.FromResult(CreatePagedResponse(_store, page, pageSize));
+        var response = CreatePagedResponse(_store, page, pageSize);
+        return Task.FromResult(response);
     }
 
     public Task<PagedResponse<Gizmo>> GetByCategoryAsync(string category, int page, int pageSize)
     {
         var filtered = _store.Where(x => string.Equals(x.Category, category, StringComparison.OrdinalIgnoreCase));
-        return Task.FromResult(CreatePagedResponse(filtered, page, pageSize));
+        var response = CreatePagedResponse(filtered, page, pageSize);
+        return Task.FromResult(response);
     }
 
     public Task<Gizmo?> GetByIdAsync(Guid id) => Task.FromResult(_store.FirstOrDefault(x => x.Id == id));
