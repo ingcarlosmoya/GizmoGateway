@@ -3,7 +3,7 @@ using FluentAssertions;
 using GizmoGateway.Domain.Entities;
 using Xunit;
 
-namespace GizmoGateway.Tests;
+namespace GizmoGateway.Tests.Unit.Domain.Entities;
 
 public class GizmoEntitiesTests
 {

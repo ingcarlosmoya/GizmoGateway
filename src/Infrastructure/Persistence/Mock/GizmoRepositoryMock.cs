@@ -38,20 +38,23 @@ public class GizmoRepositoryMock : IGizmoRepository
 
     public Task<PagedResponse<Gizmo>> GetAllAsync(int page, int pageSize)
     {
-        var total = _store.Count;
-        var items = _store.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-        var response = new PagedResponse<Gizmo>(items, page, pageSize, total);
-        return Task.FromResult(response);
+        return Task.FromResult(CreatePagedResponse(_store, page, pageSize));
     }
 
     public Task<PagedResponse<Gizmo>> GetByCategoryAsync(string category, int page, int pageSize)
     {
-        var filtered = _store.Where(x => string.Equals(x.Category, category, StringComparison.OrdinalIgnoreCase)).ToList();
-        var total = filtered.Count;
-        var items = filtered.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-        var response = new PagedResponse<Gizmo>(items, page, pageSize, total);
-        return Task.FromResult(response);
+        var filtered = _store.Where(x => string.Equals(x.Category, category, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(CreatePagedResponse(filtered, page, pageSize));
     }
 
     public Task<Gizmo?> GetByIdAsync(Guid id) => Task.FromResult(_store.FirstOrDefault(x => x.Id == id));
+
+    private static PagedResponse<Gizmo> CreatePagedResponse(IEnumerable<Gizmo> source, int page, int pageSize)
+    {
+        var list = source.ToList();
+        var total = list.Count;
+        // If pageSize is less than 1, behave like Take(0) and return empty items to match previous behavior
+        var items = pageSize > 0 ? list.Skip((page - 1) * pageSize).Take(pageSize).ToList() : new List<Gizmo>();
+        return new PagedResponse<Gizmo>(items, page, pageSize, total);
+    }
 }

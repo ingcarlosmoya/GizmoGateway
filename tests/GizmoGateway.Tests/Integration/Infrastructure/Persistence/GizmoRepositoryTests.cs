@@ -8,7 +8,7 @@ using GizmoGateway.Domain.Entities;
 using GizmoGateway.Infrastructure.Persistence.Mock;
 using Xunit;
 
-namespace GizmoGateway.Tests;
+namespace GizmoGateway.Tests.Integration.Infrastructure.Persistence;
 
 public class GizmoRepositoryTests
 {

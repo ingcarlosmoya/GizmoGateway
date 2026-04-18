@@ -49,11 +49,11 @@ This project was developed using **GitHub Copilot** as a primary AI collaborator
 3.  **Run the Application:**
     To bypass potential local execution policy blocks, it is recommended to run the project using the .NET CLI:
     ```bash
-    dotnet run --project ProjectName.Api
+    dotnet run --project GizmoGateway.Api
     ```
     *Alternatively, if your system blocks the generated .exe, run the DLL directly from the output folder:*
     ```bash
-    dotnet bin/Debug/net10.0/ProjectName.Api.dll
+    dotnet bin/Debug/net10.0/GizmoGateway.Api.dll
     ```
 
 4.  **Access Swagger:**

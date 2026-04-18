@@ -7,7 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace GizmoGateway.Tests;
+namespace GizmoGateway.Tests.Integration.Presentation.Endpoints;
 
 public class GizmoApiTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -27,6 +27,12 @@ public class GizmoApiTests : IClassFixture<WebApplicationFactory<Program>>
         var knownId = new Guid("fce2d040-ccc9-4327-bbb4-ad5648bc7a1f");
         var respOk = await client.GetAsync($"/api/gizmos/{knownId}");
         respOk.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var json = await respOk.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+        var name = root.GetProperty("name").GetString();
+        name.Should().Be("Mock Gizmo 1");
     }
 
     [Fact]

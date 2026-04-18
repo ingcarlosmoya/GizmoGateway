@@ -3,11 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using GizmoGateway.Infrastructure.Persistence.Mock;
+using GizmoGateway.Application.Services;
 using Xunit;
 
-namespace GizmoGateway.Tests;
+namespace GizmoGateway.Tests.Unit.Infrastructure.Persistence.Mock;
 
-public class GizmoServiceTests
+public class GizmoRepositoryMockTests
 {
     private readonly GizmoRepositoryMock _repo = new();
 
@@ -43,5 +44,29 @@ public class GizmoServiceTests
         response.TotalCount.Should().Be(0);
         response.PageNumber.Should().Be(1);
         response.PageSize.Should().Be(10);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsGizmo_ForValidId()
+    {
+        var svc = new GizmoService(_repo);
+
+        var knownId = new Guid("fce2d040-ccc9-4327-bbb4-ad5648bc7a1f");
+        var gizmo = await svc.GetByIdAsync(knownId);
+
+        gizmo.Should().NotBeNull();
+        gizmo!.Id.Should().Be(knownId);
+        gizmo.Name.Should().StartWith("Mock Gizmo");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsNull_ForUnknownId()
+    {
+        var svc = new GizmoService(_repo);
+
+        var randomId = Guid.NewGuid();
+        var gizmo = await svc.GetByIdAsync(randomId);
+
+        gizmo.Should().BeNull();
     }
 }
